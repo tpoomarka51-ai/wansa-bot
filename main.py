@@ -1,33 +1,35 @@
 import os
+import random
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
-import random
 
-TOKEN = os.getenv("BOT_TOKEN")
+TOKEN = os.environ.get("BOT_TOKEN")
+
+JOKES = [
+    "مرة واحد محشش دخل الامتحان، كتب اسمو وطلع، قال كفاية انجاز لليوم 😂",
+    "قالو ليه ليه بتحب الونسة؟ قال لأنها ببلاش وبتخلي المزاج عال العال 😂",
+    "واحد قال لصاحبو: أنا زهجان، قال ليهو: تعال نتوانس، الونسة بتحل كل شي 😂",
+]
+
+QUESTIONS = [
+    "لو عندك يوم كامل بدون تلفون، حتعمل شنو؟",
+    "شنو أكتر حاجة بتخليك تضحك؟",
+    "لو سافرت أي حتة في العالم، حتمشي وين؟",
+]
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("هلااااا وغلاااا 😍🔥\nنورت بوت الونسة يا زول!\nاكتب /اوامر عشان تشوف الأوامر")
+    await update.message.reply_text("أهلا بيك في بوت الونسة 🔥\nجرب:\n/نكتة - عشان تضحك\n/سؤال - عشان نتونس")
 
-async def awamer(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("أوامر بوت الونسة 🤖\n\n/نكتة - يرسل ليك نكتة\n/سؤال - سؤال ونسة\n/لعبة - لعبة خيروك\n/اوامر - تشوف القائمة دي")
+async def joke(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(random.choice(JOKES))
 
-async def nokta(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    jokes = ["مرة واحد راسو مربع، لما نام حلم انو بتدحرج 😂", "واحد غبي مشى الدكان قال ليهو عندك بيبسي؟ قال ليهو ايوة، قال ليهو اديني واحد بارد 😂", "مرة استاذ سأل طالب: شنو عاصمة السودان؟ قال ليهو: الخرطوم 😂"]
-    await update.message.reply_text(random.choice(jokes))
-
-async def soal(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    qs = ["لو خيروك تسافر أي دولة، بتختار وين وليه؟", "أكتر موقف محرج حصل ليك في المدرسة؟", "لو عندك مليار جنيه، أول حاجة بتعملها شنو؟", "بتفضل الصيف ولا الشتاء؟"]
-    await update.message.reply_text("سؤال الونسة 🔥\n\n" + random.choice(qs))
-
-async def leba(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("خيروك 🔥\n\nتكون غني وممل ولا فقير ومبسوط؟")
+async def question(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(random.choice(QUESTIONS))
 
 if __name__ == "__main__":
     app = ApplicationBuilder().token(TOKEN).build()
     app.add_handler(CommandHandler("start", start))
-    app.add_handler(CommandHandler("اوامر", awamer))
-    app.add_handler(CommandHandler("نكتة", nokta))
-    app.add_handler(CommandHandler("سؤال", soal))
-    app.add_handler(CommandHandler("لعبة", leba))
+    app.add_handler(CommandHandler("نكتة", joke))
+    app.add_handler(CommandHandler("سؤال", question))
     print("Bot is running...")
     app.run_polling()
